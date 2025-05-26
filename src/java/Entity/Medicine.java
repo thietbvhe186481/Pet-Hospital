@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class Medicine {
     private String medicineId;
+    private String image;
     private String medicineName;
     private int quantity;
     private BigDecimal price;
@@ -21,15 +22,17 @@ public class Medicine {
     public Medicine() {
     }
 
-    public Medicine(String medicineName, int quantity, BigDecimal price, Date expiryDate) {
+    public Medicine(String image, String medicineName, int quantity, BigDecimal price, Date expiryDate) {
+        this.image = image;
         this.medicineName = medicineName;
         this.quantity = quantity;
         this.price = price;
         this.expiryDate = expiryDate;
     }
 
-    public Medicine(String medicineId, String medicineName, int quantity, BigDecimal price, Date expiryDate) {
+    public Medicine(String medicineId, String image, String medicineName, int quantity, BigDecimal price, Date expiryDate) {
         this.medicineId = medicineId;
+        this.image = image;
         this.medicineName = medicineName;
         this.quantity = quantity;
         this.price = price;
@@ -42,6 +45,14 @@ public class Medicine {
 
     public void setMedicineId(String medicineId) {
         this.medicineId = medicineId;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getMedicineName() {
@@ -78,8 +89,9 @@ public class Medicine {
 
     @Override
     public String toString() {
-        return "Medicine{" + "medicineId=" + medicineId + ", medicineName=" + medicineName + ", quantity=" + quantity + ", price=" + price + ", expiryDate=" + expiryDate + '}';
+        return "Medicine{" + "medicineId=" + medicineId + ", image=" + image + ", medicineName=" + medicineName + ", quantity=" + quantity + ", price=" + price + ", expiryDate=" + expiryDate + '}';
     }
+
     
     
 }
