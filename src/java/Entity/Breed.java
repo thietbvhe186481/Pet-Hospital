@@ -9,5 +9,63 @@ package Entity;
  * @author LENOVO
  */
 public class Breed {
+    private String breedId;
+    private String breedName;
+    private String animalTypeId;
+    private boolean isActive;
+
+    public Breed() {
+    }
+
+    public Breed(String breedName, String animalTypeId, boolean isActive) {
+        this.breedName = breedName;
+        this.animalTypeId = animalTypeId;
+        this.isActive = isActive;
+    }
+
+    public Breed(String breedId, String breedName, String animalTypeId, boolean isActive) {
+        this.breedId = breedId;
+        this.breedName = breedName;
+        this.animalTypeId = animalTypeId;
+        this.isActive = isActive;
+    }
+
+    public String getBreedId() {
+        return breedId;
+    }
+
+    public void setBreedId(String breedId) {
+        this.breedId = breedId;
+    }
+
+    public String getBreedName() {
+        return breedName;
+    }
+
+    public void setBreedName(String breedName) {
+        this.breedName = breedName;
+    }
+
+    public String getAnimalTypeId() {
+        return animalTypeId;
+    }
+
+    public void setAnimalTypeId(String animalTypeId) {
+        this.animalTypeId = animalTypeId;
+    }
+
+    public boolean isIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    @Override
+    public String toString() {
+        return "Breed{" + "breedId=" + breedId + ", breedName=" + breedName + ", animalTypeId=" + animalTypeId + ", isActive=" + isActive + '}';
+    }
+    
     
 }
