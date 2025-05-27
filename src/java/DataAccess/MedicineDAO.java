@@ -100,8 +100,8 @@ public class MedicineDAO extends DBContext {
     public boolean updateMedicine(Medicine medicine) {
         String sql = "UPDATE Medicine SET medicine_name=?, image=?, quantity=?, price=?, expiry_date=? WHERE medicine_id=?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, medicine.getMedicineName());
-            ps.setString(2, medicine.getImage());
+            ps.setString(1, medicine.getImage());
+            ps.setString(2, medicine.getMedicineName());
             ps.setInt(3, medicine.getQuantity());
             ps.setBigDecimal(4, medicine.getPrice());
             ps.setDate(5, new java.sql.Date(medicine.getExpiryDate().getTime()));
