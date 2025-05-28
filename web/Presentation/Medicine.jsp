@@ -10,7 +10,7 @@ List<Medicine> medicineList = (List<Medicine>) request.getAttribute("medicineLis
 if (medicineList == null && request.getParameter("service") == null) {
     MedicineDAO dao = new MedicineDAO();
     try {
-        medicineList = dao.getAllMedicines();  // Ch? l?y khi không ph?i ?ang tìm ki?m
+        medicineList = dao.getAllMedicines();  
     } catch (Exception e) {
         medicineList = new ArrayList<>();
         e.printStackTrace();
@@ -80,20 +80,52 @@ if (medicineList == null && request.getParameter("service") == null) {
             <section class="py-5 bg-primary" id="home">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-8 text-center text-md-start py-6">
+                        <div class="col-lg-11 text-center text-md-start py-6">
                             <h2 class="display-5 text-light ">Manager Medicine</h2>
                             <div class="card">
-                                <div class="card-body" style="padding-left:100px">
+                                <div class="card-body" style="padding-left:50px">
                                     <ul class="nav nav-tabs mb-3" role="tablist">
                                         <li class="nav-item">
                                             <a href="#addMedicine" class="nav-link" data-bs-toggle="modal">Add Medicine</a>
                                         </li>
                                         <li class="nav-item">
-                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#overdate" type="button" role="tab">Over Date Medicine</button>
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="expiredSoon">
+                                                <button class="nav-link " type="submit">Expired Soon</button>
+                                            </form>
                                         </li>
                                         <li class="nav-item">
-                                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#sort" type="button" role="tab">Sort Medicine</button>
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="overDate">
+                                                <button class="nav-link  " type="submit">Over Date</button>
+                                            </form>
                                         </li>
+                                        <li class="nav-item">
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="sortByName">
+                                                <button class="nav-link " type="submit">Sort By Name</button>
+                                            </form>
+                                        </li>
+                                        <li class="nav-item">
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="sortByPrice">
+                                                <button class="nav-link " type="submit">Sort By Price</button>
+                                            </form>
+                                        </li>
+                                        <li class="nav-item">
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="sortByQuantity">
+                                                <button class="nav-link " type="submit">Sort By Quantity</button>
+                                            </form>
+                                        </li>
+                                        <li class="nav-item">
+                                            <form action="${pageContext.request.contextPath}/MedicineManagement" method="POST">
+                                                <input type="hidden" name="service" value="getAllMedicines">
+                                                <button class="nav-link " type="submit">All Medicines</button>
+                                            </form>
+                                        </li>
+
+
                                     </ul>
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active">
@@ -104,7 +136,7 @@ if (medicineList == null && request.getParameter("service") == null) {
                                                     <input class="form-control border-0 input-box bg-100"
                                                            type="search"
                                                            name="keyword"
-                                                           placeholder="Enter ID, Medicine Name"
+                                                           placeholder="Enter Medicine Name"
                                                            aria-label="Search" />
                                                 </div>
                                                 <input type="hidden" name="service" value="search">
@@ -128,14 +160,12 @@ if (medicineList == null && request.getParameter("service") == null) {
                                 <h4 class="modal-title">Add Medicine</h4>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="modal-body">					
+                            <div class="modal-body">	
                                 <div class="form-group">
-                                    <label>Medicine ID</label>
-                                    <input type="text" name="medicineId" class="form-control" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Image</label>
-                                    <input type="text" name="image" class="form-control" required>
+                                    <label>Image URL</label>
+                                    <input type="text" name="image" class="form-control" pattern=".*\.(jpg|jpeg|png|gif)$" 
+                                           title="Link ?nh ph?i k?t thúc b?ng .jpg, .jpeg, .png ho?c .gif" 
+                                           required>
                                 </div>
                                 <div class="form-group">
                                     <label>Medicine Name</label>
@@ -143,11 +173,11 @@ if (medicineList == null && request.getParameter("service") == null) {
                                 </div>
                                 <div class="form-group">
                                     <label>Quantity</label>
-                                    <input type="text" name="quantity" class="form-control" required>
+                                    <input type="number" name="quantity" class="form-control"  min="0" step="1" required>
                                 </div>
                                 <div class="form-group">
                                     <label>Price</label>
-                                    <input type="text" name="price" class="form-control" required>
+                                    <input type="number" name="price" class="form-control"  min="0" step="0.01"required>
                                 </div>
                                 <div class="form-group">
                                     <label>EXP Date</label>
@@ -182,8 +212,8 @@ if (medicineList == null && request.getParameter("service") == null) {
                     <div class="row">
                         <c:forEach var="medicine" items="${medicineList}">
                             <div class="col-sm-6 col-md-4 col-lg-3 h-100 mb-5">
-                                <div class="card card-span h-100 text-white rounded-3">
-                                    <img class="img-fluid rounded-3 h-100" src="${medicine.image}" alt="..." />
+                                <div class="card card-span text-white rounded-3" style="height: 350px;">
+                                    <img class="img-fluid rounded-3" src="${medicine.image}" style="height: 250px; object-fit: cover; width: 100%;" />
                                     <div class="card-img-overlay ps-0">
                                         <span class="badge bg-danger ms-2 me-1 p-2">
                                             <i class="fas fa-tag me-2 fs-0"></i>
@@ -202,7 +232,7 @@ if (medicineList == null && request.getParameter("service") == null) {
                                             <div class="flex-1 ms-3">
                                                 <span class="badge bg-soft-danger p-2">
                                                     <span class="fw-bold fs-1 text-danger">${medicine.medicineName}</span>
-                                                </span>
+                                                </span><br>
 
                                                 <span class="text-primary fs--1 me-1"><i class="fas fa-star"></i></span>
                                                 <span class="mb-0 text-primary">${medicine.quantity}</span>
@@ -256,11 +286,13 @@ if (medicineList == null && request.getParameter("service") == null) {
                                 </div>
                                 <div class="modal-body">
                                     <label class="block text-sm font-medium text-gray-700">Image URL</label>
-                                    <input type="text" id="medicineImage" name="image" class="block w-full p-2 mt-1 border rounded" required>
+                                    <input type="text" id="medicineImage" name="image" class="block w-full p-2 mt-1 border rounded" pattern=".*\.(jpg|jpeg|png|gif)$" 
+                                           title="Link ?nh ph?i k?t thúc b?ng .jpg, .jpeg, .png ho?c .gif" 
+                                           required>
                                 </div>
                                 <div class="modal-body">
                                     <label class="block text-sm font-medium text-gray-700">Quantity</label>
-                                    <input type="number" id="medicineQuantity" name="quantity" class="block w-full p-2 mt-1 border rounded" min="0" required>
+                                    <input type="number" id="medicineQuantity" name="quantity" class="block w-full p-2 mt-1 border rounded" min="0" step="1" required>
                                 </div>
                                 <div class="modal-body">
                                     <label class="block text-sm font-medium text-gray-700">Price (VND)</label>

@@ -70,28 +70,73 @@ public class MedicineBL extends HttpServlet {
 
         String service = request.getParameter("service");
 
+        if ("expiredSoon".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getExpiredSoon();
+            request.setAttribute("message", "Danh sách thuốc sắp hết hạn");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
+        if ("overDate".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getOverDate();
+            request.setAttribute("message", "Danh sách thuốc đã quá hạn");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
+        if ("sortByName".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getSortedByName();
+            request.setAttribute("message", "Danh sách thuốc sắp xếp theo tên");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
+        if ("sortByPrice".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getSortedByPrice();
+            request.setAttribute("message", "Danh sách thuốc sắp xếp theo giá");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
+        if ("sortByQuantity".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getSortedByQuantity();
+            request.setAttribute("message", "Danh sách thuốc sắp xếp theo số lượng");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
+        if ("getAllMedicines".equals(service)) {
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> medicineList = new ArrayList<>();
+            medicineList = dao.getAllMedicines();
+            request.setAttribute("message", "Danh sách thuốc");
+            request.setAttribute("medicineList", medicineList);
+            request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
+        }
+
         if ("search".equals(service)) {
             String keyword = request.getParameter("keyword").trim();
 
-            MedicineDAO dao = new MedicineDAO(); // hoặc dùng DAO đã có
-            List<Medicine> resultList = new ArrayList<>();
-
-            // Nếu nhập đúng ID (ví dụ: M001) thì ưu tiên tìm theo ID
-            Medicine medicine = dao.findMedicineById(keyword);
-            if (medicine != null) {
-                resultList.add(medicine);
-            } else {
-                // Nếu không tìm thấy theo ID, tìm theo tên gần đúng
-                resultList = dao.findMedicinesByName(keyword);
-            }
+            MedicineDAO dao = new MedicineDAO();
+            List<Medicine> resultList = dao.findMedicinesByName(keyword);  // Tìm theo tên luôn
 
             request.setAttribute("medicineList", resultList);
             request.getRequestDispatcher("Presentation/Medicine.jsp").forward(request, response);
-
         }
 
         if ("addMedicine".equals(service)) {
-            String id = request.getParameter("medicineId");
+            MedicineDAO dao = new MedicineDAO();
+            String id = dao.generateNextMedicineId();
             String name = request.getParameter("medicineName");
             String image = request.getParameter("image");
             String quantityStr = request.getParameter("quantity");
@@ -106,7 +151,7 @@ public class MedicineBL extends HttpServlet {
                 java.sql.Date expiryDate = new java.sql.Date(parsed.getTime());
 
                 Medicine medicine = new Medicine(id, image, name, quantity, price, expiryDate);
-                MedicineDAO dao = new MedicineDAO();
+               
                 dao.insertMedicine(medicine);
                 response.sendRedirect("Presentation/Medicine.jsp");
 

@@ -35,28 +35,6 @@ public class MedicineDAO extends DBContext {
         return list;
     }
 
-    public Medicine findMedicineById(String medicineId) {
-        String sql = "SELECT * FROM Medicine WHERE medicine_id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, medicineId);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Medicine(
-                            rs.getString("medicine_id"),
-                            rs.getString("image"),
-                            rs.getString("medicine_name"),
-                            rs.getInt("quantity"),
-                            rs.getBigDecimal("price"),
-                            rs.getDate("expiry_date")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public List<Medicine> findMedicinesByName(String name) {
         List<Medicine> list = new ArrayList<>();
         String sql = "SELECT * FROM Medicine WHERE LOWER(medicine_name) LIKE LOWER(?)";
@@ -97,11 +75,26 @@ public class MedicineDAO extends DBContext {
         return false;
     }
 
+    public String generateNextMedicineId() {
+        String sql = "SELECT TOP 1 medicine_id FROM Medicine ORDER BY medicine_id DESC";
+        try (PreparedStatement ptm = connection.prepareStatement(sql); ResultSet rs = ptm.executeQuery()) {
+            if (rs.next()) {
+                String lastId = rs.getString("medicine_id"); // ví dụ "MED012"
+                int num = Integer.parseInt(lastId.substring(3)); // bỏ 3 ký tự đầu "MED"
+                num++; // tăng lên
+                return String.format("MED%03d", num); // ví dụ "MED013"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "MED001"; // Nếu chưa có gì trong DB
+    }
+
     public boolean updateMedicine(Medicine medicine) {
         String sql = "UPDATE Medicine SET medicine_name=?, image=?, quantity=?, price=?, expiry_date=? WHERE medicine_id=?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, medicine.getImage());
-            ps.setString(2, medicine.getMedicineName());
+            ps.setString(1, medicine.getMedicineName());
+            ps.setString(2, medicine.getImage());
             ps.setInt(3, medicine.getQuantity());
             ps.setBigDecimal(4, medicine.getPrice());
             ps.setDate(5, new java.sql.Date(medicine.getExpiryDate().getTime()));
@@ -122,6 +115,112 @@ public class MedicineDAO extends DBContext {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Medicine> getExpiredSoon() {
+        List<Medicine> list = new ArrayList<>();
+        String sql = "SELECT * FROM Medicine WHERE expiry_date BETWEEN CAST(GETDATE() AS DATE) AND DATEADD(DAY, 30, CAST(GETDATE() AS DATE))";
+        try (
+                PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medicine med = new Medicine(
+                        rs.getString("medicine_id"),
+                        rs.getString("image"),
+                        rs.getString("medicine_name"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("price"),
+                        rs.getDate("expiry_date")
+                );
+                list.add(med);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Medicine> getOverDate() {
+        List<Medicine> list = new ArrayList<>();
+        String sql = "SELECT * FROM Medicine WHERE expiry_date < CAST(GETDATE() AS DATE)";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medicine med = new Medicine(
+                        rs.getString("medicine_id"),
+                        rs.getString("image"),
+                        rs.getString("medicine_name"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("price"),
+                        rs.getDate("expiry_date")
+                );
+                list.add(med);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Medicine> getSortedByName() {
+        List<Medicine> list = new ArrayList<>();
+        String sql = "SELECT * FROM Medicine ORDER BY medicine_name ASC";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medicine med = new Medicine(
+                        rs.getString("medicine_id"),
+                        rs.getString("image"),
+                        rs.getString("medicine_name"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("price"),
+                        rs.getDate("expiry_date")
+                );
+                list.add(med);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Medicine> getSortedByPrice() {
+        List<Medicine> list = new ArrayList<>();
+        String sql = "SELECT * FROM Medicine ORDER BY price ASC";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medicine med = new Medicine(
+                        rs.getString("medicine_id"),
+                        rs.getString("image"),
+                        rs.getString("medicine_name"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("price"),
+                        rs.getDate("expiry_date")
+                );
+                list.add(med);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<Medicine> getSortedByQuantity() {
+        List<Medicine> list = new ArrayList<>();
+        String sql = "SELECT * FROM Medicine ORDER BY quantity ASC";  // Sắp xếp theo quantity tăng dần
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Medicine med = new Medicine(
+                        rs.getString("medicine_id"),
+                        rs.getString("image"),
+                        rs.getString("medicine_name"),
+                        rs.getInt("quantity"),
+                        rs.getBigDecimal("price"),
+                        rs.getDate("expiry_date")
+                );
+                list.add(med);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public boolean reduceMedicineQuantity(String medicineId, int amount) {
