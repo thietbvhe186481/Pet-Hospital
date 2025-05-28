@@ -671,4 +671,165 @@
     <script src="./js/main.js"></script>
         
     </body>
+    <head>
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .about-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .info {
+            margin-top: 20px;
+        }
+        .info strong {
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-container">
+        <h1>About Us</h1>
+        <p>
+            Chào mừng bạn đến với <strong>PetCare Clinic</strong> – nơi chăm sóc sức khỏe cho thú cưng của bạn.
+            Với đội ngũ bác sĩ thú y tận tâm và giàu kinh nghiệm, chúng tôi cam kết mang lại dịch vụ tốt nhất cho chó và mèo của bạn.
+        </p>
+        <div class="info">
+            <p><strong>Địa chỉ:</strong> 123 Đường Thái Hà, Đống Đa, TP.Hà Nội</p>
+            <p><strong>Điện thoại:</strong> 0986868686 </p>
+            <p><strong>Email:</strong> contact@petcare.vn</p>
+        </div>
+    </div>
+</body>
+<head>
+    <title>Pet Hospital - Home</title>
+    <style>
+        #map {
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h2>Welcome to PetCare</h2>
+
+    <h3>Our Location (FPT University Hanoi):</h3>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            var fptHanoi = { lat: 21.013252, lng: 105.525978 };
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 15,
+                center: fptHanoi
+            });
+            var marker = new google.maps.Marker({
+                position: fptHanoi,
+                map: map,
+                title: "FPT University Hanoi"
+            });
+        }
+    </script>
+
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMiVd_sGO-VjU0bT2EGJZBNvJvUUKiMIM&callback=initMap">
+    </script>
+</body>
+<head>
+  <title>Pet Hospital Map</title>
+  <meta charset="UTF-8" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="map"></div>
+
+  <script>
+    let map;
+
+    function initMap() {
+      const fptHanoi = { lat: 21.013252, lng: 105.525978 };
+
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: fptHanoi,
+        mapTypeControl: true,
+        zoomControl: true,
+        streetViewControl: true,
+      });
+
+      const clinics = [
+        { lat: 21.013252, lng: 105.525978, name: "FPT University Hanoi" },
+        { lat: 21.016, lng: 105.522, name: "Pet Clinic A" },
+        { lat: 21.005, lng: 105.527, name: "Pet Clinic B" }
+      ];
+
+      clinics.forEach((loc) => {
+        new google.maps.Marker({
+          position: { lat: loc.lat, lng: loc.lng },
+          map: map,
+          title: loc.name
+        });
+      });
+
+      // Dịch vụ chỉ đường
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer();
+      directionsRenderer.setMap(map);
+
+      // Vị trí người dùng
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          const request = {
+            origin: userLocation,
+            destination: fptHanoi,
+            travelMode: google.maps.TravelMode.DRIVING
+          };
+
+          directionsService.route(request, (result, status) => {
+            if (status === "OK") {
+              directionsRenderer.setDirections(result);
+            } else {
+              alert("Không tìm được đường đi.");
+            }
+          });
+        }, () => {
+          alert("Trình duyệt không cho phép truy cập vị trí.");
+        });
+      } else {
+        alert("Trình duyệt không hỗ trợ định vị.");
+      }
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMiVd_sGO-VjU0bT2EGJZBNvJvUUKiMIM&callback=initMap">
+  </script>
+</body>
 </html>
